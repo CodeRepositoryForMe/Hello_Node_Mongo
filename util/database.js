@@ -1,30 +1,20 @@
-//const mysql = require("mysql2");
 const dotenv = require("dotenv");
-const sequelize = require("sequelize");
-
-//const { sequelize } = require("sequelize");
+const mongodb = require("mongodb");
+const MongoClient = mongodb.MongoClient;
 
 dotenv.config();
 
-//// Traditional MySQL connection
+const mongoConnect = (callback) => {
+    console.log("DB Connecttion URI");
+    console.log(process.env.DB_URL);
+  MongoClient.connect(process.env.DB_URL)
+    .then((client) => {
+      console.log("Database Connected !!!!");
+      console.log(client);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
-// const pool = mysql.createPool({
-//     host: process.env.DB_HOST,
-//     port: process.env.DB_PORT,
-//     user: process.env.DB_USER,
-//     database: process.env.DB_NAME,
-//     password: process.env.DB_PWD
-// });
-
-// module.exports = pool.promise();
-
-//// Changs for sequelize
-
-const sequelizeObj = new sequelize(
-  process.env.DB_NAME,
-  process.env.DB_USER,
-  process.env.DB_PWD,
-  { dialect: process.env.DB_SERVER, host: process.env.DB_HOST }
-);
-
-module.exports = sequelizeObj;
+module.exports = mongoConnect;
