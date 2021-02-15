@@ -14,8 +14,8 @@ const defaultRoute = require("./routes/default");
 // Helper
 const Helper = require("./util/helper");
 
-// Database 
-const mongoConnect = require("./util/database");
+// Database
+const mongoConnect = require("./util/database").manegeConnect;
 
 // Controllers
 const errorController = require("./controllers/Error");
@@ -42,13 +42,9 @@ app.use(defaultRoute);
 
 app.use(errorController.errorPageNotFound);
 
-// const server = http.createServer(app);
+const server = http.createServer(app);
 
-// server.listen(3000, function () {
-//   console.log("Server started !!!");
-// });
-
-mongoConnect((client) => {
-    console.log(client);
+mongoConnect(() => {
     app.listen(3000);
+    console.log("Server Started !!!!");
 });

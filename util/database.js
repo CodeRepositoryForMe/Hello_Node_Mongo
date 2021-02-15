@@ -4,17 +4,30 @@ const MongoClient = mongodb.MongoClient;
 
 dotenv.config();
 
+let _db;
+
 const mongoConnect = (callback) => {
-    console.log("DB Connecttion URI");
-    console.log(process.env.DB_URL);
-  MongoClient.connect(process.env.DB_URL)
+  console.log("DB Connecttion URI");
+  console.log(process.env.MONGO_DB_URL);
+  MongoClient.connect(process.env.MONGO_DB_URL, { useUnifiedTopology: true })
     .then((client) => {
       console.log("Database Connected !!!!");
-      console.log(client);
+      _db = client.db();
+      callback();
+      //console.log(_0db);
     })
     .catch((err) => {
       console.log(err);
+      throw err;
     });
 };
 
-module.exports = mongoConnect;
+const getDB = () => {
+  if (_db) {
+    return _db;
+  }
+  throw "No database found";
+};
+
+exports.manegeConnect = mongoConnect;
+exports.getDB = getDB;

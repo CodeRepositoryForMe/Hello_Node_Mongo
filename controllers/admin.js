@@ -1,10 +1,19 @@
-const productObj = require("../models/product");
 const { v4: uuidv4 } = require("uuid");
+const Product = require("../models/product");
 
 // Add product to Catelog
 exports.exePostProducts = (req, res, next) => {
   console.log("Add product to Catelog !!");
+  
+  console.log(req.body);
 
+  const title = req.body.Title;
+  const price = req.body.Cost;
+  const description = req.body.Description;
+  const imageURL = req.body.ProductLink;
+console.log(title +"---"+ price + "---" + description +" --- "+ imageURL);
+  const product = new Product(title, price, description, imageURL);
+  product.save().then().catch();
   res.redirect("/catelog");
 };
 

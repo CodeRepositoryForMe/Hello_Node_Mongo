@@ -1,5 +1,6 @@
 const { v4: uuidv4 } = require("uuid");
 const Helper = require("../util/helper");
+const Product = require("../models/product");
 
 // Get all products
 exports.exeGetProducts = (req, res, next) => {
@@ -27,15 +28,19 @@ exports.exeGetProduct = (req, res, next) => {
 // Show all product in catelog
 exports.exeShowProductCatelog = (req, res, next) => {
   console.log("Catelog page here !!!");
-
-  res.render("shop/catelog", {
-    pageTitle: "Catelog",
-    //prods: products,
-    doctTitle: "Shopping Catalog",
-    pageName: "catelog",
-    //hasProduct: products.length > 0,
-    catelog: true,
-  });
+  Product.fetchAll()
+    .then((products) => {
+      res.render("shop/catelog", {
+        pageTitle: "Catelog",
+        prods: products,
+        doctTitle: "Shopping Catalog",
+        pageName: "catelog",
+        catelog: true,
+      });
+    })
+    .catch(err => {
+        console.log(err);
+    });
 };
 
 // Get all products from catr file
