@@ -17,12 +17,17 @@ exports.exeGetProducts = (req, res, next) => {
 exports.exeGetProduct = (req, res, next) => {
   const productID = req.params.productid;
   console.log(productID);
-
-  res.render("shop/product-details", {
-    pageTitle: "Product Details",
-    pageName: "pageDetails",
-    product: productID,
-  });
+  Product.findByID(productID)
+    .then((product) => {
+      res.render("shop/product-details", {
+        pageTitle: "Product Details",
+        pageName: "pageDetails",
+        product: product,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 // Show all product in catelog
@@ -38,8 +43,8 @@ exports.exeShowProductCatelog = (req, res, next) => {
         catelog: true,
       });
     })
-    .catch(err => {
-        console.log(err);
+    .catch((err) => {
+      console.log(err);
     });
 };
 
