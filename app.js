@@ -16,6 +16,7 @@ const Helper = require("./util/helper");
 
 // Database
 const mongoConnect = require("./util/database").manegeConnect;
+const User = require("./models/user");
 
 // Controllers
 const errorController = require("./controllers/Error");
@@ -28,6 +29,19 @@ app.set("views", path.join(__dirname, "views"));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
+
+app.use((req, res, next) => {
+  User.findByID('5fa91b81b430b0498c427cb9')
+    .then((user) => {
+      console.log("User********");
+      console.log(user);
+      req.loggedInUser = user;
+      next();
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
 
 app.use("/", (req, res, next) => {
   console.log("This always Executes !!!");
@@ -45,6 +59,6 @@ app.use(errorController.errorPageNotFound);
 const server = http.createServer(app);
 
 mongoConnect(() => {
-    app.listen(3000);
-    console.log("Server Started !!!!");
+  app.listen(3000);
+  console.log("Server Started !!!!");
 });

@@ -8,13 +8,20 @@ const ObjectId = mongoDB.ObjectId;
 exports.exePostProducts = (req, res, next) => {
   console.log("Add product to Catelog !!");
 
-  console.log(req.body);
+  console.log(req.loggedInUser);
 
   const title = req.body.Title;
   const price = req.body.Cost;
   const description = req.body.Description;
   const imageURL = req.body.ProductLink;
-  const product = new Product(title, price, description, imageURL);
+  const product = new Product(
+    title,
+    price,
+    description,
+    imageURL,
+    null,
+    req.loggedInUser._id
+  );
   product
     .save()
     .then((result) => {
@@ -90,7 +97,7 @@ exports.exeDeleteProduct = (req, res, next) => {
   console.log(productID);
   Product.deleteByID(productID)
     .then((result) => {
-        res.redirect("/editProduct");
+      res.redirect("/editProduct");
     })
     .catch((err) => {
       console.log(err);
