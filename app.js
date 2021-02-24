@@ -31,11 +31,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
-  User.findByID('5fa91b81b430b0498c427cb9')
+  User.findByID("5fa91b81b430b0498c427cb9")
     .then((user) => {
-      console.log("User********");
-      console.log(user);
-      req.loggedInUser = user;
+      req.loggedInUser = new User(user.name, user.email, user.cart, user._id);
+      //console.log("User********");
+      //console.log(req.loggedInUser);
       next();
     })
     .catch((err) => {
@@ -45,7 +45,7 @@ app.use((req, res, next) => {
 
 app.use("/", (req, res, next) => {
   console.log("This always Executes !!!");
-  console.log(req.body);
+  //console.log(req.body);
   next();
 });
 

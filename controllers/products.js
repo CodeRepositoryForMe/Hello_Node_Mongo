@@ -54,7 +54,7 @@ exports.exeGetCart = (req, res, next) => {
 
   res.render("shop/cart", {
     pageTitle: "Cart",
-    //cart: cart[0],
+    cart: req.loggedInUser.getCart(),
     pageName: "cart",
   });
 };
@@ -63,13 +63,25 @@ exports.exeGetCart = (req, res, next) => {
 exports.exePostCart = (req, res, next) => {
   console.log("Post request for Cart");
   const productID = req.body.productID;
-  console.log(productID);
+  Product.findByID(productID)
+    .then((product) => {
+      return req.loggedInUser.addToCart(product);
+    })
+    .then((result) => {
+      console.log("Product Added to Cart!!!");
+      //console.log(result);
+      res.render("shop/cart", {
+        pageTitle: "Cart",
+        pageName: "cart",
+        cart: req.loggedInUser.getCart(),
+      });
+    })
+    .catch((err) => {
+      console.log("Fauiled to add product in Cart");
+      console.log(err);
+    });
 
-  res.render("shop/cart", {
-    pageTitle: "Cart",
-    pageName: "cart",
-    //cart: cart[0],
-  });
+  //
 };
 
 // Delete selected product

@@ -78,7 +78,8 @@ exports.exePutProduct = (req, res, next) => {
     price,
     description,
     imageURL,
-    new ObjectId(id)
+    new ObjectId(id),
+    req.loggedInUser._id
   );
   product
     .save()
