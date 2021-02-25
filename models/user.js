@@ -1,7 +1,7 @@
 const getDB = require("../util/database").getDB;
 const mongoDB = require("mongodb");
 
-const ObjectId = new mongoDB.ObjectId;
+const ObjectId = new mongoDB.ObjectId();
 
 class User {
   constructor(username, email, cart, id) {
@@ -87,6 +87,59 @@ class User {
           { $set: { cart: { items: updatedCartItems } } }
         );
     }
+  }
+
+  addOrder() {
+    console.log("In Order !!");
+    const order = {
+      items: this.cart.items,
+      user: {
+        _id: new mongoDB.ObjectId(this._id),
+        name: this.name,
+      },
+    };
+    const db = getDB();
+    return db
+      .collection("orders")
+      .insertOne(order)
+      .then((result) => {
+        console.log(result.insertedId);
+        const output = {
+          insertedId: result.insertedId,
+          acknowledged: result.acknowledged,
+        };
+        this.cart = { items: [] };
+        return output;
+      });
+  }
+
+  getOrder(OrderId) {
+    const db = getDB();
+    return db
+      .collection("orders")
+      .find({ _id: new mongoDB.ObjectId(OrderId) })
+      .next()
+      .then((order) => {
+        return order;
+      });
+  }
+
+  getOrders() {
+    const db = getDB();
+    return db
+      .collection("orders")
+      .find({ "user._id": new mongoDB.ObjectId(this._id) })
+      .toArray();
+  }
+
+  cleanUserCart() {
+    const db = getDB();
+    return db
+      .collection("users")
+      .updateOne(
+        { _id: new mongoDB.ObjectId(this._id) },
+        { $set: { cart: { items: [] } } }
+      );
   }
 }
 

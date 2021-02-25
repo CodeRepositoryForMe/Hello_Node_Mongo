@@ -86,30 +86,36 @@ exports.exeDeleteCartProduct = (req, res, next) => {
   const productID = req.params.productid;
   console.log(productID);
   req.loggedInUser.deleteFromCart(productID).then((result) => {
-    res.redirect('/cart');
-    // res.render("shop/cart", {
-    //   pageTitle: "Cart",
-    //   pageName: "cart",
-    //   cart: req.loggedInUser.getCart(),
-    // });
+    res.redirect("/cart");
   });
 };
 
 exports.exeOrders = (req, res, next) => {
   console.log("This is order page");
-
-  res.render("shop/orders", {
-    pageTitle: "Orders",
-    pageName: "orders",
+  req.loggedInUser.getOrders()
+  .then((orders) => {
+    //console.log("orders");
+    //console.log(orders);
+    res.render("shop/orders", {
+      pageTitle: "Orders",
+      pageName: "orders",
+      orders: orders,
+    });
   });
 };
 
 exports.exePostOrders = (req, res, next) => {
   console.log("Create order from Cart");
-
-  res.render("shop/orders", {
-    pageTitle: "Orders",
-    pageName: "orders",
+  req.loggedInUser.addOrder().then((result) => {
+    return req.loggedInUser.getOrder(result.insertedId).then((order) => {
+      //console.log(order);
+      req.loggedInUser.cleanUserCart();
+      res.render("shop/order", {
+        pageTitle: "Order",
+        pageName: "Order",
+        order: order,
+      });
+    });
   });
 };
 
