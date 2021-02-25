@@ -1,7 +1,7 @@
 const getDB = require("../util/database").getDB;
 const mongoDB = require("mongodb");
 
-const ObjectId = new mongoDB.ObjectId();
+const ObjectId = new mongoDB.ObjectId;
 
 class User {
   constructor(username, email, cart, id) {
@@ -40,8 +40,8 @@ class User {
       });
   }
 
-  getCart(){
-      return this.cart;
+  getCart() {
+    return this.cart;
   }
 
   addToCart(product) {
@@ -66,10 +66,27 @@ class User {
     const updatedCart = { items: updatedCartItems };
     //console.log(updatedCart);
     const db = getDB();
-    return db.collection("users").updateOne(
-      { _id: new mongoDB.ObjectId(this._id) },
-      { $set: { cart: updatedCart } }
-    );
+    return db
+      .collection("users")
+      .updateOne(
+        { _id: new mongoDB.ObjectId(this._id) },
+        { $set: { cart: updatedCart } }
+      );
+  }
+
+  deleteFromCart(productId) {
+    if (this.cart && this.cart.items) {
+      let updatedCartItems = this.cart.items.filter((cartProduct) => {
+        return cartProduct._id.toString() !== productId.toString();
+      });
+      const db = getDB();
+      return db
+        .collection("users")
+        .updateOne(
+          { _id: new mongoDB.ObjectId(this._id) },
+          { $set: { cart: { items: updatedCartItems } } }
+        );
+    }
   }
 }
 

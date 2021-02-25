@@ -70,11 +70,7 @@ exports.exePostCart = (req, res, next) => {
     .then((result) => {
       console.log("Product Added to Cart!!!");
       //console.log(result);
-      res.render("shop/cart", {
-        pageTitle: "Cart",
-        pageName: "cart",
-        cart: req.loggedInUser.getCart(),
-      });
+      res.redirect("/cart");
     })
     .catch((err) => {
       console.log("Fauiled to add product in Cart");
@@ -89,11 +85,13 @@ exports.exeDeleteCartProduct = (req, res, next) => {
   console.log("Delete this product !!");
   const productID = req.params.productid;
   console.log(productID);
-
-  res.render("shop/cart", {
-    pageTitle: "Cart",
-    pageName: "cart",
-    //cart: cart[0],
+  req.loggedInUser.deleteFromCart(productID).then((result) => {
+    res.redirect('/cart');
+    // res.render("shop/cart", {
+    //   pageTitle: "Cart",
+    //   pageName: "cart",
+    //   cart: req.loggedInUser.getCart(),
+    // });
   });
 };
 
